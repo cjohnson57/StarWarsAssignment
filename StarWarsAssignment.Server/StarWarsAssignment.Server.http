@@ -1,0 +1,6 @@
+@StarWarsAssignment.Server_HostAddress = http://localhost:5119
+
+GET {{StarWarsAssignment.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
