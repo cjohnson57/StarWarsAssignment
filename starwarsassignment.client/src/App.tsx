@@ -41,25 +41,17 @@ function App() {
 
     const columns = useMemo(
         () => [
-            { accessorKey: 'name', header: 'Name', enableColumnFilter: true },
-            { accessorKey: 'model', header: 'Model', enableColumnFilter: true },
-            { accessorKey: 'manufacturer', header: 'Manufacturer', enableColumnFilter: true },
-            {
-                accessorKey: 'costInCredits',
-                header: 'Cost',
-                cell: (info: any) => info.getValue() ?? '',
-            },
-            {
-                accessorKey: 'length',
-                header: 'Length',
-                cell: (info: any) => info.getValue() ?? '',
-            },
-            { accessorKey: 'maxAtmospheringSpeed', header: 'Max Speed' },
+            { accessorKey: 'name', header: 'Name' },
+            { accessorKey: 'model', header: 'Model' },
+            { accessorKey: 'manufacturer', header: 'Manufacturer' },
+            { accessorKey: 'costInCredits', header: 'Cost (credits)' },
+            { accessorKey: 'length', header: 'Length (m)' },
+            { accessorKey: 'maxAtmospheringSpeed', header: 'Max Speed (kph)' },
             { accessorKey: 'crew', header: 'Crew' },
             { accessorKey: 'passengers', header: 'Passengers' },
-            { accessorKey: 'cargoCapacity', header: 'Cargo' },
+            { accessorKey: 'cargoCapacity', header: 'Cargo Capacity' },
             { accessorKey: 'consumables', header: 'Consumables' },
-            { accessorKey: 'hyperdriveRating', header: 'Hyperdrive' },
+            { accessorKey: 'hyperdriveRating', header: 'Hyperdrive Class' },
             { accessorKey: 'mglt', header: 'MGLT' },
             { accessorKey: 'starshipClass', header: 'Class' },
             {
@@ -85,7 +77,7 @@ function App() {
         },
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: (updater: any) => {
-            // If the library passes an updater function, call it with previous state.
+            //If the library passes an updater function, call it with previous state.
             if (typeof updater === 'function') {
                 setSorting(prev => updater(prev));
             } else {
@@ -102,6 +94,14 @@ function App() {
         <div>
             <h1>Starship Dealership Listings</h1>
             <p>Use this page to edit listings for our customers.</p>
+
+            <button
+                type="button"
+                onClick={handleUpdateShipsClick}
+                style={{ marginTop: 8, color: 'lightgray' }}
+            >
+                Update Ships from API
+            </button>
 
             <div style={{ marginBottom: 8, marginTop: 30 }}>
                 <input
@@ -124,7 +124,7 @@ function App() {
                                         <div
                                             onClick={header.column.getToggleSortingHandler()}
                                             title={header.column.getCanSort() ? 'Toggle sort' : undefined}
-                                            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
                                         >
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                             {{
@@ -138,7 +138,7 @@ function App() {
                                             <input
                                                 value={(header.column.getFilterValue() ?? '') as string}
                                                 onChange={e => header.column.setFilterValue(e.target.value ?? undefined)}
-                                                style={{ padding: 4, width: '100%' }}
+                                                style={{ padding: 4, width: '100%', boxSizing: 'border-box' }}
                                                 id={"Filter" + String(header.column.columnDef.header)}
                                                 aria-label={"Filter" + String(header.column.columnDef.header)}
                                             />
@@ -178,6 +178,26 @@ function App() {
         if (response.ok) {
             const data = await response.json();
             setStarships(data);
+        }
+    }
+
+    async function handleUpdateShipsClick() {
+        const confirmed = window.confirm('Are you sure you want to update ships from the API? This will erase any changes made to ships found on the API.');
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/starships/UpdateShipsFromAPI', { method: 'GET' });
+            if (response.ok) {
+                await populateStarshipData();
+                window.alert('Ships updated successfully.');
+            } else {
+                const text = await response.text();
+                window.alert(`Update failed: ${response.status} ${response.statusText}\n${text}`);
+            }
+        } catch (err) {
+            window.alert(`Update failed: ${String(err)}`);
         }
     }
 }
