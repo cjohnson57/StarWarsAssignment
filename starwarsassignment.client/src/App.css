@@ -2,12 +2,66 @@
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
-    font-size: 16px;
+    font-size: 1.7vh;
 }
+
+@media (max-width: 1024px) {
+    #root {
+        font-size: 2.4vh;
+    }
+}
+
+.header {
+    position: sticky;
+    left: 50vw;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    gap: 1rem;
+    line-height: 1.5rem;
+}
+
+    .header > h1 {
+        line-height: 2.75rem;
+        margin-bottom: 0;
+    }
+
+.starshipTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1%;
+}
+
+    .starshipTable > tbody > tr {
+        border-bottom: 1px solid darkgray;
+    }
 
 th, td {
     padding-left: 1rem;
     padding-right: 1rem;
+}
+
+@media (max-width: 1024px) {
+    th, td {
+        padding-top: .5rem;
+        line-height: 2rem;
+    }
+}
+
+.iconImg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 1024px) {
+    .iconImg {
+        width: 30px;
+        height: 30px;
+    }
 }
 
 .sidebar {
@@ -15,12 +69,25 @@ th, td {
     top: 0;
     right: 0;
     height: 100%;
-    width: 340px;
+    width: 20%;
     background: #121212;
-    transition: transform 220ms ease-in-out;
+    transition: transform 250ms ease-in-out;
     padding: 16px;
     z-index: 9999;
     overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 100vw;
+        inset: 0;
+        padding: 0;
+        height: 100vh;
+        transition: none;
+        visibility: hidden;
+        overscroll-behavior: contain;
+        padding-bottom: 10%;
+    }
 }
 
 .sidebarForm {
@@ -31,9 +98,15 @@ th, td {
 }
 
 .sidebarLabel {
-    margin-top: 5px;
+    margin-top: 1%;
 }
 
 .sidebarField {
     width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .sidebarField {
+        width: 90vw;
+    }
 }

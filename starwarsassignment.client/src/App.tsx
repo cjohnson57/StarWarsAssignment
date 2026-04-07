@@ -1,5 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import {
     flexRender,
     getCoreRowModel,
@@ -40,6 +40,8 @@ function App() {
     const [sorting, setSorting] = useState<SortingStateLocal>([]);
     const [showSidebar, setShowSidebar] = useState<boolean>(false);
     const [sidebarShip, setSidebarShip] = useState<Starship>(emptyShip);
+    const scrollYRef = useRef(0);
+    const scrollXRef = useRef(0);
 
     useEffect(() => {
         void populateStarshipData();
@@ -93,54 +95,54 @@ function App() {
                 aria-hidden={!showSidebar}
                 className="sidebar"
                 style={{
-                    transform: showSidebar ? 'translateX(0)' : 'translateX(100%)'
+                    transform: showSidebar ? 'translateX(0)' : 'translateX(100%)',
                 }}
             >
                 <h2 style={{ marginTop: 0 }}>Ship Editor</h2>
 
                 <StarshipForm ship={sidebarShip} setShip={setSidebarShip} />
 
-                <div style={{ display: 'flex', gap: 8, marginTop: 24, justifyContent: 'center' }}>
+                <div style={{ display: 'flex', gap: '5%', marginTop: '7.5%', marginBottom: '5%', justifyContent: 'center' }}>
                     <button type="button" id="submitBtn" style={{ color: 'lightgray' }} onClick={handleSubmitSidebar}>Submit</button>
-                    <button type="button" id="cancelBtn" style={{ color: 'lightgray' }} onClick={() => setShowSidebar(false)}>Cancel</button>
+                    <button type="button" id="cancelBtn" style={{ color: 'lightgray' }} onClick={() => changeSidebar(false) }>Cancel</button>
                 </div>
             </div>
 
-            <h1>Starship Dealership Listings</h1>
-            <p>Use this page to edit listings for our customers.</p>
+            <div className="header">
+                <h1>Starship Dealership Listings</h1>
+                <p>Use this page to edit listings for our customers.</p>
 
-            <button
-                type="button"
-                onClick={handleUpdateShipsClick}
-                style={{ marginTop: 8, color: 'lightgray' }}
-                id="updateShipsBtn"
-            >
-                Update Ships from API
-            </button>
+                <button
+                    type="button"
+                    onClick={handleUpdateShipsClick}
+                    style={{ color: 'lightgray' }}
+                    id="updateShipsBtn"
+                >
+                    Update Ships from API
+                </button>
 
-            <br />
+                <button
+                    type="button"
+                    onClick={handleNewShipClick}
+                    style={{ color: 'lightgray' }}
+                    id="newShipBtn"
+                >
+                    Add New Ship
+                </button>
 
-            <button
-                type="button"
-                onClick={handleNewShipClick}
-                style={{ marginTop: 8, color: 'lightgray' }}
-                id="newShipBtn"
-            >
-                Add New Ship
-            </button>
+                <div style={{ }}>
+                    <input
+                        value={globalFilter ?? ''}
+                        onChange={e => setGlobalFilter(e.target.value)}
+                        placeholder="Global search..."
+                        style={{ padding: '1%', width: '100%' }}
+                        id="GlobalSearch"
+                        aria-label="GlobalSearch"
+                    />
+                </div>
+            </div>            
 
-            <div style={{ marginBottom: 8, marginTop: 30 }}>
-                <input
-                    value={globalFilter ?? ''}
-                    onChange={e => setGlobalFilter(e.target.value)}
-                    placeholder="Global search..."
-                    style={{ padding: '6px', width: 240 }}
-                    id="GlobalSearch"
-                    aria-label="GlobalSearch"
-                />
-            </div>
-
-            <table className="table table-striped" style={{ width: '100%' }}>
+            <table className="table table-striped starshipTable">
                 <thead>
                     {starshipTable.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
@@ -160,7 +162,7 @@ function App() {
                                         </div>
                                     )}
                                     {header.column.getCanFilter() ? (
-                                        <div style={{ marginTop: 4 }}>
+                                        <div style={{ marginTop: '1.5%' }}>
                                             <input
                                                 value={(header.column.getFilterValue() ?? '') as string}
                                                 onChange={e => header.column.setFilterValue(e.target.value ?? undefined)}
@@ -191,7 +193,7 @@ function App() {
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}
-                                <td style={{ textAlign: 'right', width: 48, display: 'flex', flexDirection: 'row', gap: 10 }}>
+                                <td style={{ textAlign: 'right', display: 'flex', flexDirection: 'row', gap: 10 }}>
                                     <button
                                         type="button"
                                         onClick={() => handleShipEditClick(row.original)}
@@ -199,7 +201,7 @@ function App() {
                                         className="iconButton"
                                         style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer' }}
                                     >
-                                        <img src={editIcon} alt="Edit" style={{ width: 20, height: 20 }} />
+                                        <img src={editIcon} alt="Edit" className="iconImg" />
                                     </button>
                                     <button
                                         type="button"
@@ -208,7 +210,7 @@ function App() {
                                         className="iconButton"
                                         style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer' }}
                                     >
-                                        <img src={deleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
+                                        <img src={deleteIcon} alt="Delete" className="iconImg" />
                                     </button>
                                 </td>
                             </tr>
@@ -251,12 +253,45 @@ function App() {
 
     function handleNewShipClick() {
         setSidebarShip(emptyShip); //Clear fields
-        setShowSidebar(true); //Show sidebar
+        changeSidebar(true); //Show sidebar        
     }
 
     function handleShipEditClick(ship: Starship) {
         setSidebarShip(ship); //Set ship to the sidebar
-        setShowSidebar(true); //Show sidebar
+        changeSidebar(true); //Show sidebar        
+    }
+
+    function changeSidebar(show: boolean) {
+        setShowSidebar(show);
+        const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+        const sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
+        if (isMobile) {
+            if (show) {
+                //Show the bar          
+                sidebar.style.visibility = 'inherit';
+                //Store the current scroll and scroll to the top left so sidebar is shown correctly
+                scrollXRef.current = window.scrollX;
+                scrollYRef.current = window.scrollY;
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.left = `-${scrollXRef.current}px`;
+                document.body.style.top = `-${scrollYRef.current}px`;
+                document.body.style.width = '100%';
+            }
+            else {
+                //Hide the sidebar                
+                sidebar.style.visibility = 'hidden';
+                //Unset body position and scroll back to previous position
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.left = '';
+                document.body.style.top = '';
+                document.body.style.width = '';
+                //Could not get this scroll to previous position to work
+                //window.scrollTo(scrollXRef.current, scrollYRef.current);
+            }
+        }
     }
 
     //POSTs new or updated ship to backend
@@ -286,7 +321,7 @@ function App() {
             });
             if (response.ok) { //Success, message depends on action
                 await populateStarshipData();
-                setShowSidebar(false);
+                changeSidebar(false);
                 if (shipIsNew) {
                     window.alert('Ship ' + sidebarShip.name + ' created successfully.');
                 }
