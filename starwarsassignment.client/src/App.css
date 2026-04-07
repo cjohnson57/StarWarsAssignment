@@ -9,3 +9,20 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 340px;
+    background: #121212;
+    transition: transform 220ms ease-in-out;
+    padding: 16px;
+    z-index: 9999;
+    overflow-y: auto;
+}
+
+.sidebarField {
+    width: 80%;
+}

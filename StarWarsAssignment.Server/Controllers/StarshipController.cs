@@ -30,7 +30,19 @@ namespace StarWarsAssignment.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<Starship>> Get()
         {
-            return _db.GetStarshipAsync().Result;
+            return await _db.GetStarshipAsync();
+        }
+
+        [HttpDelete]
+        public async Task<bool> Delete(int starshipId)
+        {
+            return (await _db.DeleteStarshipAsync(starshipId) > 0);
+        }
+
+        [HttpPost]
+        public async Task<bool> Post(Starship starship)
+        {
+            return (await _db.UpsertStarshipAsync(starship) > 0);
         }
 
         [HttpGet("UpdateShipsFromAPI")]

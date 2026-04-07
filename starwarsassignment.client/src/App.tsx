@@ -8,25 +8,27 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import './App.css';
+import type { Starship } from './types.ts';
+import StarshipForm from './StarshipForm';
 
-interface Starship {
-    starshipId: number;
-    name: string | null;
-    model: string | null;
-    manufacturer: string | null;
-    costInCredits: number | null;
-    length: number | null;
-    maxAtmospheringSpeed: string | null;
-    crew: number | null;
-    passengers: number | null;
-    cargoCapacity: number | null;
-    consumables: string | null;
-    hyperdriveRating: number | null;
-    mglt: number | null;
-    starshipClass: string | null;
-    created: string | null;
-    edited: string | null;
-}
+const emptyShip: Starship = {
+    starshipId: 0,
+    name: null,
+    model: null,
+    manufacturer: null,
+    costInCredits: null,
+    length: null,
+    maxAtmospheringSpeed: null,
+    crew: null,
+    passengers: null,
+    cargoCapacity: null,
+    consumables: null,
+    hyperdriveRating: null,
+    mglt: null,
+    starshipClass: null,
+    created: null,
+    edited: null,
+};
 
 type SortingStateLocal = { id: string; desc: boolean }[];
 
@@ -34,6 +36,8 @@ function App() {
     const [starships, setStarships] = useState<Starship[]>([]);
     const [globalFilter, setGlobalFilter] = useState<string>('');
     const [sorting, setSorting] = useState<SortingStateLocal>([]);
+    const [showSidebar, setShowSidebar] = useState<boolean>(false);
+    const [sidebarShip, setSidebarShip] = useState<Starship>(emptyShip);
 
     useEffect(() => {
         void populateStarshipData();
@@ -92,6 +96,24 @@ function App() {
 
     return (
         <div>
+            <div
+                id="sidebar"
+                aria-hidden={!showSidebar}
+                className="sidebar"
+                style={{
+                    transform: showSidebar ? 'translateX(0)' : 'translateX(100%)'
+                }}
+            >
+                <h2 style={{ marginTop: 0 }}>Ship Editor</h2>
+
+                <StarshipForm ship={sidebarShip} setShip={setSidebarShip} />
+
+                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                    <button type="button" id="submitBtn" style={{ color: 'lightgray' }} onClick={handleSubmitSidebar}>Submit</button>
+                    <button type="button" id="cancelBtn" style={{ color: 'lightgray' }} onClick={() => setShowSidebar(false)}>Cancel</button>
+                </div>
+            </div>
+
             <h1>Starship Dealership Listings</h1>
             <p>Use this page to edit listings for our customers.</p>
 
@@ -99,8 +121,20 @@ function App() {
                 type="button"
                 onClick={handleUpdateShipsClick}
                 style={{ marginTop: 8, color: 'lightgray' }}
+                id="updateShipsBtn"
             >
                 Update Ships from API
+            </button>
+
+            <br />
+
+            <button
+                type="button"
+                onClick={handleNewShipClick}
+                style={{ marginTop: 8, color: 'lightgray' }}
+                id="newShipBtn"
+            >
+                Add New Ship
             </button>
 
             <div style={{ marginBottom: 8, marginTop: 30 }}>
@@ -198,6 +232,38 @@ function App() {
             }
         } catch (err) {
             window.alert(`Update failed: ${String(err)}`);
+        }
+    }
+
+    function handleNewShipClick() {
+        setSidebarShip(emptyShip); //Clear fields
+        setShowSidebar(true); //Show sidebar
+    }
+
+    //POSTs new or updated ship to backend
+    async function handleSubmitSidebar() {
+        try {
+            const shipIsNew: boolean = sidebarShip.starshipId == 0;
+            const response = await fetch('/starships', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sidebarShip),
+            });
+            if (response.ok) {
+                await populateStarshipData();
+                setShowSidebar(false);
+                if (shipIsNew) {
+                    window.alert('Ship ' + sidebarShip.name + ' created successfully.');
+                }
+                else {
+                    window.alert('Ship ' + sidebarShip.name + ' updated successfully.');
+                }                
+            } else {
+                const text = await response.text();
+                window.alert(`Submit failed: ${response.status} ${response.statusText}\n${text}`);
+            }
+        } catch (err) {
+            window.alert(`Submit failed: ${String(err)}`);
         }
     }
 }
