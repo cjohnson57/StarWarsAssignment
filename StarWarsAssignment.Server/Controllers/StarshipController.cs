@@ -33,7 +33,7 @@ namespace StarWarsAssignment.Server.Controllers
             return await _db.GetStarshipAsync();
         }
 
-        [HttpDelete]
+        [HttpDelete("{starshipId}")]
         public async Task<bool> Delete(int starshipId)
         {
             return (await _db.DeleteStarshipAsync(starshipId) > 0);
@@ -50,6 +50,7 @@ namespace StarWarsAssignment.Server.Controllers
         {
             try
             {
+                //Contact the SWAPI
                 string responseBody = await client.GetStringAsync("https://swapi.info/api/starships");
                 using JsonDocument doc = JsonDocument.Parse(responseBody);                
                 foreach (var item in doc.RootElement.EnumerateArray())

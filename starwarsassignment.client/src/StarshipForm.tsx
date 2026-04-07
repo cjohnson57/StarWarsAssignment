@@ -30,8 +30,8 @@ export default function StarshipForm({ ship, setShip }: Props) {
     };
 
     return (
-        <div>
-            <label htmlFor="sidebar-name">Name *</label><br />
+        <div className="sidebarForm">
+            <label className="sidebarLabel" htmlFor="sidebar-name">Name *</label>
             <input
                 id="sidebar-name"
                 type="text"
@@ -39,11 +39,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setString('name', e.target.value || null)}
                 placeholder="Enter ship name"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-model">Model *</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-model">Model *</label>
             <input
                 id="sidebar-model"
                 type="text"
@@ -51,11 +49,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setString('model', e.target.value || null)}
                 placeholder="Enter model"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-manufacturer">Manufacturer *</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-manufacturer">Manufacturer *</label>
             <input
                 id="sidebar-manufacturer"
                 type="text"
@@ -63,11 +59,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setString('manufacturer', e.target.value || null)}
                 placeholder="Enter manufacturer"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-costInCredits">Cost (in credits)</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-costInCredits">Cost (in credits)</label>
             <input
                 id="sidebar-costInCredits"
                 type="text"
@@ -75,11 +69,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setInt('costInCredits', e.target.value)}
                 placeholder="e.g. 100000"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-length">Length</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-length">Length</label>
             <input
                 id="sidebar-length"
                 type="text"
@@ -87,11 +79,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setFloat('length', e.target.value)}
                 placeholder="e.g. 34.37"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-maxAtmospheringSpeed">Max Atmosphering Speed</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-maxAtmospheringSpeed">Max Atmosphering Speed</label>
             <input
                 id="sidebar-maxAtmospheringSpeed"
                 type="text"
@@ -99,11 +89,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setString('maxAtmospheringSpeed', e.target.value || null)}
                 placeholder="e.g. 1050"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-crew">Crew</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-crew">Crew</label>
             <input
                 id="sidebar-crew"
                 type="text"
@@ -111,11 +99,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setInt('crew', e.target.value)}
                 placeholder="e.g. 4"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-passengers">Passengers</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-passengers">Passengers</label>
             <input
                 id="sidebar-passengers"
                 type="text"
@@ -123,11 +109,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setInt('passengers', e.target.value)}
                 placeholder="e.g. 6"
-            />
+            />                      
 
-            <br />
-
-            <label htmlFor="sidebar-cargoCapacity">Cargo Capacity</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-cargoCapacity">Cargo Capacity</label>
             <input
                 id="sidebar-cargoCapacity"
                 type="text"
@@ -135,11 +119,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setInt('cargoCapacity', e.target.value)}
                 placeholder="e.g. 100000"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-consumables">Consumables</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-consumables">Consumables</label>
             <input
                 id="sidebar-consumables"
                 type="text"
@@ -147,11 +129,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setString('consumables', e.target.value || null)}
                 placeholder="e.g. 2 months"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-hyperdriveRating">Hyperdrive Rating</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-hyperdriveRating">Hyperdrive Rating</label>
             <input
                 id="sidebar-hyperdriveRating"
                 type="text"
@@ -159,11 +139,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setFloat('hyperdriveRating', e.target.value)}
                 placeholder="e.g. 0.5"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-mglt">MGLT</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-mglt">MGLT</label>
             <input
                 id="sidebar-mglt"
                 type="text"
@@ -171,11 +149,9 @@ export default function StarshipForm({ ship, setShip }: Props) {
                 className="sidebarField"
                 onChange={e => setInt('mglt', e.target.value)}
                 placeholder="e.g. 75"
-            />
+            />            
 
-            <br />
-
-            <label htmlFor="sidebar-starshipClass">Starship Class</label><br />
+            <label className="sidebarLabel" htmlFor="sidebar-starshipClass">Starship Class</label>
             <input
                 id="sidebar-starshipClass"
                 type="text"

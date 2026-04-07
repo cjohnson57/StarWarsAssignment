@@ -10,6 +10,8 @@ import {
 import './App.css';
 import type { Starship } from './types.ts';
 import StarshipForm from './StarshipForm';
+import editIcon from './assets/edit.png';
+import deleteIcon from './assets/delete.png';
 
 const emptyShip: Starship = {
     starshipId: 0,
@@ -58,16 +60,6 @@ function App() {
             { accessorKey: 'hyperdriveRating', header: 'Hyperdrive Class' },
             { accessorKey: 'mglt', header: 'MGLT' },
             { accessorKey: 'starshipClass', header: 'Class' },
-            {
-                accessorKey: 'created',
-                header: 'Created',
-                cell: (info: any) => (info.getValue() ? new Date(info.getValue() as string).toLocaleString() : ''),
-            },
-            {
-                accessorKey: 'edited',
-                header: 'Edited',
-                cell: (info: any) => (info.getValue() ? new Date(info.getValue() as string).toLocaleString() : ''),
-            },
         ],
         []
     );
@@ -108,7 +100,7 @@ function App() {
 
                 <StarshipForm ship={sidebarShip} setShip={setSidebarShip} />
 
-                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 24, justifyContent: 'center' }}>
                     <button type="button" id="submitBtn" style={{ color: 'lightgray' }} onClick={handleSubmitSidebar}>Submit</button>
                     <button type="button" id="cancelBtn" style={{ color: 'lightgray' }} onClick={() => setShowSidebar(false)}>Cancel</button>
                 </div>
@@ -199,6 +191,26 @@ function App() {
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}
+                                <td style={{ textAlign: 'right', width: 48, display: 'flex', flexDirection: 'row', gap: 10 }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleShipEditClick(row.original)}
+                                        aria-label="Edit ship"
+                                        className="iconButton"
+                                        style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer' }}
+                                    >
+                                        <img src={editIcon} alt="Edit" style={{ width: 20, height: 20 }} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleShipDeleteClick(row.original)}
+                                        aria-label="Delete ship"
+                                        className="iconButton"
+                                        style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer' }}
+                                    >
+                                        <img src={deleteIcon} alt="Delete" style={{ width: 20, height: 20 }} />
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     )}
@@ -208,6 +220,7 @@ function App() {
     );
 
     async function populateStarshipData() {
+        //Get ship data from DB
         const response = await fetch('/starships');
         if (response.ok) {
             const data = await response.json();
@@ -222,8 +235,9 @@ function App() {
         }
 
         try {
+            //Call backend which will contact the SWAPI
             const response = await fetch('/starships/UpdateShipsFromAPI', { method: 'GET' });
-            if (response.ok) {
+            if (response.ok) { //Success, update ship table
                 await populateStarshipData();
                 window.alert('Ships updated successfully.');
             } else {
@@ -240,16 +254,37 @@ function App() {
         setShowSidebar(true); //Show sidebar
     }
 
+    function handleShipEditClick(ship: Starship) {
+        setSidebarShip(ship); //Set ship to the sidebar
+        setShowSidebar(true); //Show sidebar
+    }
+
     //POSTs new or updated ship to backend
     async function handleSubmitSidebar() {
         try {
-            const shipIsNew: boolean = sidebarShip.starshipId == 0;
+            //Check for required fields
+            let errors: string = '';
+            if (!sidebarShip.name || sidebarShip.name.trim() === '') {
+                errors += 'Name is required.\n';
+            }
+            if (!sidebarShip.model || sidebarShip.model.trim() === '') {
+                errors += 'Model is required.\n';
+            }
+            if (!sidebarShip.manufacturer || sidebarShip.manufacturer.trim() === '') {
+                errors += 'Manufacturer is required.\n';
+            }
+            if (errors) {
+                window.alert(errors);
+                return;
+            }
+            const shipIsNew: boolean = sidebarShip.starshipId == 0; //If this is a new ship
+            //POST request
             const response = await fetch('/starships', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(sidebarShip),
             });
-            if (response.ok) {
+            if (response.ok) { //Success, message depends on action
                 await populateStarshipData();
                 setShowSidebar(false);
                 if (shipIsNew) {
@@ -258,12 +293,32 @@ function App() {
                 else {
                     window.alert('Ship ' + sidebarShip.name + ' updated successfully.');
                 }                
-            } else {
+            } else { //Failed
                 const text = await response.text();
                 window.alert(`Submit failed: ${response.status} ${response.statusText}\n${text}`);
             }
         } catch (err) {
             window.alert(`Submit failed: ${String(err)}`);
+        }
+    }
+
+    async function handleShipDeleteClick(ship: Starship) {
+        const confirmed = window.confirm('Are you sure you want to delete ship ' + ship.name + '?');
+        if (!confirmed) {
+            return;
+        }
+        try {
+            //Call backend to delete this ship
+            const response = await fetch('/starships/' + ship.starshipId, { method: 'DELETE' });
+            if (response.ok) { //Success, update ship table
+                await populateStarshipData();
+                window.alert('Ship ' + ship.name + ' deleted successfully.');
+            } else {
+                const text = await response.text();
+                window.alert(`Delete failed: ${response.status} ${response.statusText}\n${text}`);
+            }
+        } catch (err) {
+            window.alert(`Delete failed: ${String(err)}`);
         }
     }
 }
