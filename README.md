@@ -23,7 +23,7 @@ In either case, after you have opened the client, the database will initially be
 
 Also for both options, you will need Node.js and npm, [which you can find here](https://nodejs.org/en/download).
 
-For the Visual Studio option you will of course need ot install that, [which can be found here](https://visualstudio.microsoft.com/downloads/).
+For the Visual Studio option you will of course need to install that, [which can be found here](https://visualstudio.microsoft.com/downloads/).
 
 ### Using Visual Studio
 1. Open [StarWarsAssignment.sln](StarWarsAssignment.sln) using Visual Studio.
