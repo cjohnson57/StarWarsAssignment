@@ -111,6 +111,7 @@ namespace StarWarsAssignment.Server.Controllers
                 string? valueString = prop.GetString() ?? null;
                 //One entry in the API erroneously includes "km" in the atmosphering speed, so handle that here
                 valueString = valueString?.Replace("km", "");
+                valueString = valueString?.Replace(",", "");
                 if (int.TryParse(valueString, out int value))
                 {
                     return value;
@@ -124,6 +125,7 @@ namespace StarWarsAssignment.Server.Controllers
             if (item.TryGetProperty(propertyName, out var prop))
             {
                 string? valueString = prop.GetString() ?? null;
+                valueString = valueString?.Replace(",", "");
                 if (long.TryParse(valueString, out long value))
                 {
                     return value;
@@ -137,6 +139,7 @@ namespace StarWarsAssignment.Server.Controllers
             if (item.TryGetProperty(propertyName, out var prop))
             {
                 string? valueString = prop.GetString() ?? null;
+                valueString = valueString?.Replace(",", "");
                 if (decimal.TryParse(valueString, out decimal value))
                 {
                     return value;
